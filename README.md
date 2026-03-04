@@ -26,7 +26,7 @@ There are 4 different classes of leaf diseases namely - `Cassava Bacterial Bligh
 ## Inference example
 
 ```python
-import PIL import Image
+from PIL import Image
 from cassava.pretrained import get_model
 
 image = Image.open("<insert your image path here>")

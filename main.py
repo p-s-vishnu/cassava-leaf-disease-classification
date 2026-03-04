@@ -1,3 +1,4 @@
+import os
 import time
 
 import numpy as np
@@ -21,23 +22,11 @@ from cassava.model import CassavaClassifier
 from cassava.train import train_fn
 from cassava.valid import valid_fn
 
-# # Initializations
+# Module-level state (set by run_training)
 OUTPUT_DIR = "/"
-train = pd.read_csv("data/train.csv")
-
-LOGGER = utils.init_logger()
-utils.seed_torch(config.SEED)
-
-# Creating CV Strategy
-folds = train.copy()
-fold_strategy = model_selection.StratifiedKFold(
-    n_splits=config.N_FOLD, shuffle=True, random_state=config.SEED
-)
-for n, (train_index, val_index) in enumerate(fold_strategy.split(folds, folds[config.TARGET_COL])):
-    folds.loc[val_index, "fold"] = int(n)
-folds["fold"] = folds["fold"].astype(int)
-
-device = torch.device("gpu" if torch.cuda.is_available() else "cpu")
+LOGGER = None
+folds = None
+device = None
 
 
 def train_loop(folds, fold):
@@ -177,33 +166,51 @@ def train_loop(folds, fold):
     return valid_folds
 
 
-def main():
+def run_training(data_csv: str = "data/train.csv", output_dir: str = "model/"):
+    """Run stratified k-fold training."""
+    global folds, device, LOGGER, OUTPUT_DIR
 
-    """
-    Prepare: 1.train  2.test  3.submission  4.folds
-    """
+    if not os.path.exists(data_csv):
+        raise FileNotFoundError(f"Training data not found: {data_csv}")
 
-    def get_result(result_df):
-        preds = result_df["preds"].values
-        labels = result_df[config.TARGET_COL].values
+    OUTPUT_DIR = output_dir if output_dir.endswith("/") else output_dir + "/"
+    os.makedirs(OUTPUT_DIR, exist_ok=True)
+
+    train_df = pd.read_csv(data_csv)
+    LOGGER = utils.init_logger(log_file=os.path.join(OUTPUT_DIR, "train.log"))
+    utils.seed_torch(config.SEED)
+
+    folds = train_df.copy()
+    fold_strategy = model_selection.StratifiedKFold(
+        n_splits=config.N_FOLD, shuffle=True, random_state=config.SEED
+    )
+    for n, (train_index, val_index) in enumerate(
+        fold_strategy.split(folds, folds[config.TARGET_COL])
+    ):
+        folds.loc[val_index, "fold"] = int(n)
+    folds["fold"] = folds["fold"].astype(int)
+
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+    oof_df = pd.DataFrame()
+    for fold in range(config.N_FOLD):
+        if fold in config.TRN_FOLD:
+            _oof_df = train_loop(folds, fold)
+            oof_df = pd.concat([oof_df, _oof_df])
+            LOGGER.info(f"========== fold: {fold} result ==========")
+            preds = _oof_df["preds"].values
+            labels = _oof_df[config.TARGET_COL].values
+            score = utils.get_score(labels, preds)
+            LOGGER.info(f"Score: {score:<.5f}")
+
+    if len(oof_df) > 0:
+        LOGGER.info("========== CV ==========")
+        preds = oof_df["preds"].values
+        labels = oof_df[config.TARGET_COL].values
         score = utils.get_score(labels, preds)
         LOGGER.info(f"Score: {score:<.5f}")
-
-    if config.train:
-        # train
-        oof_df = pd.DataFrame()
-        for fold in range(config.n_fold):
-            if fold in config.trn_fold:
-                _oof_df = train_loop(folds, fold)
-                oof_df = pd.concat([oof_df, _oof_df])
-                LOGGER.info(f"========== fold: {fold} result ==========")
-                get_result(_oof_df)
-        # CV result
-        LOGGER.info("========== CV ==========")
-        get_result(oof_df)
-        # save result
-        oof_df.to_csv(OUTPUT_DIR + "oof_df.csv", index=False)
+        oof_df.to_csv(os.path.join(OUTPUT_DIR, "oof_df.csv"), index=False)
 
 
 if __name__ == "__main__":
-    main()
+    run_training()
