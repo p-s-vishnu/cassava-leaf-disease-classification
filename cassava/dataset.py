@@ -1,5 +1,4 @@
-""" Image dataset definition
-"""
+"""Image dataset definition"""
 
 import cv2
 import torch
