@@ -20,7 +20,6 @@ def exp_t(u, t):
 
 
 def compute_normalization_fixed_point(activations, t, num_iters):
-
     """Returns the normalization value for each example (t > 1.0).
     Args:
       activations: A multi-dimensional tensor with last dimension `num_classes`.
@@ -44,7 +43,6 @@ def compute_normalization_fixed_point(activations, t, num_iters):
 
 
 def compute_normalization_binary_search(activations, t, num_iters):
-
     """Returns the normalization value for each example (t < 1.0).
     Args:
       activations: A multi-dimensional tensor with last dimension `num_classes`.
@@ -151,7 +149,6 @@ def tempered_softmax(activations, t, num_iters=5):
 def bi_tempered_binary_logistic_loss(
     activations, labels, t1, t2, label_smoothing=0.0, num_iters=5, reduction="mean"
 ):
-
     """Bi-Tempered binary logistic loss.
     Args:
       activations: A tensor containing activations for class 1.
@@ -181,7 +178,6 @@ def bi_tempered_binary_logistic_loss(
 def bi_tempered_logistic_loss(
     activations, labels, t1, t2, label_smoothing=0.0, num_iters=5, reduction="mean"
 ):
-
     """Bi-Tempered Logistic Loss.
     Args:
       activations: A multi-dimensional tensor with last dimension `num_classes`.
@@ -262,11 +258,14 @@ class FocalCosineLoss(nn.Module):
 
         self.xent = xent
 
-        self.y = torch.Tensor([1]).cuda()
+        self.register_buffer("y", torch.Tensor([1]))
 
     def forward(self, input, target, reduction="mean"):
         cosine_loss = F.cosine_embedding_loss(
-            input, F.one_hot(target, num_classes=input.size(-1)), self.y, reduction=reduction
+            input,
+            F.one_hot(target, num_classes=input.size(-1)).float(),
+            self.y.to(input.device),
+            reduction=reduction,
         )
 
         cent_loss = F.cross_entropy(F.normalize(input), target, reduce=False)

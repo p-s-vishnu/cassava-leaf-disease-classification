@@ -20,7 +20,7 @@ def get_transforms(*, data):
     if data == "train":
         return Compose(
             [
-                RandomResizedCrop(config.SIZE, config.SIZE),
+                RandomResizedCrop(size=(config.SIZE, config.SIZE)),
                 Transpose(p=0.5),
                 HorizontalFlip(p=0.5),
                 VerticalFlip(p=0.5),
@@ -32,9 +32,9 @@ def get_transforms(*, data):
     if data in ["valid", "test"]:
         return Compose(
             [
-                Resize(config.SIZE, config.SIZE),
+                Resize(height=config.SIZE, width=config.SIZE),
                 Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
                 ToTensorV2(),
             ]
         )
-    return Exception("Unimplemented data transform!")
+    raise ValueError(f"Unimplemented data transform: {data}")

@@ -1,25 +1,60 @@
-# Example configuration for Black.
+[project]
+name = "cassava-classifier"
+version = "0.0.2"
+description = "Cassava leaf disease classification using Deep neural network in Pytorch"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.9"
+authors = [
+    { name = "Prasanna Kumar" },
+    { name = "PS Vishnu" },
+]
+keywords = ["image classification", "leaf disease classifier", "pytorch"]
+classifiers = [
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+dependencies = [
+    "albumentations>=0.5.2",
+    "opencv-python>=4.5.1",
+    "pandas>=1.2.3",
+    "scikit-learn>=0.24.1",
+    "timm>=0.4.5",
+    "torch>=2.0.0",
+]
 
-# NOTE: you have to use single-quoted strings in TOML for regular expressions.
-# It's the equivalent of r-strings in Python.  Multiline strings are treated as
-# verbose regular expressions by Black.  Use [ ] to denote a significant space
-# character.
+[project.optional-dependencies]
+dev = ["ruff", "mypy", "pytest"]
+apex = ["apex"]
 
-[tool.black]
+[project.urls]
+Homepage = "https://github.com/p-s-vishnu/cassava-leaf-disease-classification"
+
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+exclude = ["tests", "docs", "images"]
+
+[tool.ruff]
 line-length = 100
-target-version = ['py36', 'py37', 'py38']
-include = '\.pyi?$'
-exclude = '''
-/(
-    \.eggs
-  | \.git
-  | \.hg
-  | \.mypy_cache
-  | \.tox
-  | \.venv
-  | _build
-  | buck-out
-  | build
-  | dist
-)/
-'''
+target-version = "py39"
+
+[tool.ruff.lint]
+# F401: unused imports, F403: star imports — intentionally allowed in this codebase
+ignore = ["F401", "F403", "D", "E203"]
+
+[tool.ruff.format]
+quote-style = "double"
+
+[tool.mypy]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

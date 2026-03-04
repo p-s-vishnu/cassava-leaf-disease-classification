@@ -1,0 +1,39 @@
+# This workflow will install Python dependencies, run tests and lint with a variety of Python versions
+
+name: Python package
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.9", "3.10", "3.11", "3.12"]
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Install uv
+      uses: astral-sh/setup-uv@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install dependencies
+      run: uv sync --extra dev
+
+    - name: Lint with ruff
+      run: uv run ruff check cassava/ main.py tests/
+
+    - name: Format check with ruff
+      run: uv run ruff format --check cassava/ main.py tests/
+
+    - name: Run Mypy
+      run: uv run mypy cassava/
+
+    - name: Test with pytest
+      run: uv run pytest tests/ -v

@@ -54,7 +54,6 @@ Try out the inference code either on google colab or kaggle.
 [Medium link]
 
 
-
 ## Acknowledgements
 
 We would like to thank Kaggle community as a whole for providing an avenue to learn and discuss latest data science/machine learning advancements but a hat tip to whose code was used / who inspired us.
@@ -62,6 +61,3 @@ We would like to thank Kaggle community as a whole for providing an avenue to le
 1. Vladimir Iglovikov for his wonderful article ["I trained a model. What is next?"](https://ternaus.blog/tutorial/2020/08/28/Trained-model-what-is-next.html)
 
 2. [Y. Nakama](https://www.kaggle.com/yasufuminakama) for the baseline code.
-
-
-<a href="https://www.buymeacoffee.com/vpkprasanna" target="_blank"><img src="https://github.com/appcraftstudio/buymeacoffee/raw/master/Images/snapshot-bmc-button.png" width="300"></a>
