@@ -1,4 +1,5 @@
 import json
+import re
 
 import cv2
 import numpy as np
@@ -10,6 +11,12 @@ from typer.testing import CliRunner
 from cassava.cli import app
 
 runner = CliRunner()
+
+_ANSI_RE = re.compile(r"\x1b\[[0-9;]*m")
+
+
+def _strip_ansi(text: str) -> str:
+    return _ANSI_RE.sub("", text)
 
 
 @pytest.fixture
@@ -37,23 +44,26 @@ def test_app_help():
 def test_train_help():
     result = runner.invoke(app, ["train", "--help"])
     assert result.exit_code == 0
-    assert "--model" in result.output
-    assert "--epochs" in result.output
-    assert "--lr" in result.output
+    output = _strip_ansi(result.output)
+    assert "--model" in output
+    assert "--epochs" in output
+    assert "--lr" in output
 
 
 def test_predict_help():
     result = runner.invoke(app, ["predict", "--help"])
     assert result.exit_code == 0
-    assert "--checkpoint" in result.output
-    assert "--threshold" in result.output
+    output = _strip_ansi(result.output)
+    assert "--checkpoint" in output
+    assert "--threshold" in output
 
 
 def test_evaluate_help():
     result = runner.invoke(app, ["evaluate", "--help"])
     assert result.exit_code == 0
-    assert "--checkpoint" in result.output
-    assert "--data" in result.output
+    output = _strip_ansi(result.output)
+    assert "--checkpoint" in output
+    assert "--data" in output
 
 
 # --- Train tests ---
