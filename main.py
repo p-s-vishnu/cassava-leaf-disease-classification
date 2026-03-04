@@ -124,7 +124,6 @@ def train_loop(folds, fold):
     best_score = 0.0
 
     for epoch in range(config.EPOCHS):
-
         start_time = time.time()
 
         # train
@@ -147,13 +146,13 @@ def train_loop(folds, fold):
         elapsed = time.time() - start_time
 
         LOGGER.info(
-            f"Epoch {epoch+1} - avg_train_loss: {avg_loss:.4f}  avg_val_loss: {avg_val_loss:.4f}  time: {elapsed:.0f}s"
+            f"Epoch {epoch + 1} - avg_train_loss: {avg_loss:.4f}  avg_val_loss: {avg_val_loss:.4f}  time: {elapsed:.0f}s"
         )
-        LOGGER.info(f"Epoch {epoch+1} - Accuracy: {score}")
+        LOGGER.info(f"Epoch {epoch + 1} - Accuracy: {score}")
 
         if score > best_score:
             best_score = score
-            LOGGER.info(f"Epoch {epoch+1} - Save Best Score: {best_score:.4f} Model")
+            LOGGER.info(f"Epoch {epoch + 1} - Save Best Score: {best_score:.4f} Model")
             torch.save(
                 {"model": model.state_dict(), "preds": preds},
                 OUTPUT_DIR + f"{config.MODEL_NAME}_fold{fold}_best.pth",
