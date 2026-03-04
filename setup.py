@@ -21,7 +21,7 @@ setup(
     install_requires=[
         "albumentations==0.5.2",
         "apex==0.9.10dev",
-        "opencv-python==4.5.1.48",
+        "opencv-python==4.8.1.78",
         "pandas==1.2.3",
         "scikit_learn==0.24.1",
         "timm==0.4.5",
