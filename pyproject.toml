@@ -1,6 +1,6 @@
 [project]
 name = "cassava-classifier"
-version = "0.0.2"
+version = "0.0.4"
 description = "Cassava leaf disease classification using Deep neural network in Pytorch"
 readme = "README.md"
 license = "MIT"
