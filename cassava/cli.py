@@ -1,5 +1,3 @@
-"""Cassava leaf disease classifier CLI."""
-
 from pathlib import Path
 from typing import Optional
 
