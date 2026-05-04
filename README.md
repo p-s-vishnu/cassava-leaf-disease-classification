@@ -63,6 +63,28 @@ The hooks include:
 - **pre-commit-hooks** — YAML/JSON validation, merge conflict detection, trailing whitespace
 - **mypy** — static type checking
 
+### Releasing to PyPI
+
+The package is published via the `Publish to PyPI` GitHub Actions workflow using PyPI Trusted Publishing (no API tokens). Two trigger paths:
+
+```bash
+# Build and validate locally before triggering CI
+uv build
+uv run --with twine twine check dist/*
+
+# Dry-run to TestPyPI (manual dispatch)
+gh workflow run publish.yml -f target=testpypi
+
+# Real release: bump version in pyproject.toml, then push a matching tag
+git tag v0.0.4
+git push origin v0.0.4
+
+# Watch the run
+gh run watch
+```
+
+The `build` job verifies that the tag (e.g. `v0.0.4`) matches `pyproject.toml`'s `version` field before publishing.
+
 ## Other details
 - Training data can be found on the [Kaggle competition page](https://www.kaggle.com/c/cassava-leaf-disease-classification)
 
