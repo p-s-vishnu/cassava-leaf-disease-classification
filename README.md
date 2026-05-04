@@ -1,5 +1,5 @@
 # Cassava leaf disease classification
-[![PyPI version shields.io](https://img.shields.io/badge/pypi-0.0.2-blue)](https://pypi.org/project/cassava-classifier/)  [![Downloads](https://pepy.tech/badge/cassava-classifier)](https://pepy.tech/project/cassava-classifier)  
+[![PyPI version shields.io](https://img.shields.io/badge/pypi-0.0.2-blue)](https://pypi.org/project/cassava-classifier/)  [![Downloads](https://pepy.tech/badge/cassava-classifier)](https://pepy.tech/project/cassava-classifier)
 
 
 The idea of this project is to build an image classifier to find out healthy and diseased cassava leaves.
@@ -26,7 +26,7 @@ There are 4 different classes of leaf diseases namely - `Cassava Bacterial Bligh
 ## Inference example
 
 ```python
-import PIL import Image
+from PIL import Image
 from cassava.pretrained import get_model
 
 image = Image.open("<insert your image path here>")
@@ -40,6 +40,28 @@ model.predict_as_json(image: np.array)
 Try out the inference code either on google colab or kaggle.
 
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1gPLY6nqF6P4WdvIRIAH_aYQn-iWkzvqs?usp=sharing) [![Kaggle](https://kaggle.com/static/images/open-in-kaggle.svg)](https://www.kaggle.com/vpkprasanna/cassava-inference-from-pypi)
+
+## Development Setup
+
+### Pre-commit hooks
+
+This project uses [pre-commit](https://pre-commit.com/) to run linting, formatting, and type-checking automatically before each commit.
+
+```bash
+# Install pre-commit
+uv tool install pre-commit
+
+# Install the git hooks
+pre-commit install
+
+# (Optional) Run against all files manually
+pre-commit run --all-files
+```
+
+The hooks include:
+- **ruff** — linting with auto-fix + formatting (replaces black, isort, flake8)
+- **pre-commit-hooks** — YAML/JSON validation, merge conflict detection, trailing whitespace
+- **mypy** — static type checking
 
 ## Other details
 - Training data can be found on the [Kaggle competition page](https://www.kaggle.com/c/cassava-leaf-disease-classification)
@@ -58,6 +80,6 @@ Try out the inference code either on google colab or kaggle.
 
 We would like to thank Kaggle community as a whole for providing an avenue to learn and discuss latest data science/machine learning advancements but a hat tip to whose code was used / who inspired us.
 
-1. Vladimir Iglovikov for his wonderful article ["I trained a model. What is next?"](https://ternaus.blog/tutorial/2020/08/28/Trained-model-what-is-next.html)
+1. Vladimir Iglovikov for his wonderful article ["I trained a model. What is next?"](https://ternaus.blog/tutorial/2020/08/28/Trained-model-what-is-next.html) — [archived copy](docs/iglovikov-trained-model-what-is-next.md)
 
 2. [Y. Nakama](https://www.kaggle.com/yasufuminakama) for the baseline code.
